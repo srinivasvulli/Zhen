@@ -11,7 +11,10 @@ export async function POST(request: Request) {
     const profile = profileSchema.parse(await request.json());
     const issues = regionalIssues(profile);
     if (issues.length) return NextResponse.json({ error: 'Add measurable outcomes before downloading.', issues }, { status: 422 });
-    const pdf = await renderToBuffer(React.createElement(ResumeDocument, { profile }));
+    // @react-pdf/renderer currently ships React element typings that differ from
+    // React 19's createElement return type. The document is valid at runtime.
+    const document = React.createElement(ResumeDocument, { profile }) as unknown as Parameters<typeof renderToBuffer>[0];
+    const pdf = await renderToBuffer(document);
     return new NextResponse(pdf, { headers: { 'Content-Type': 'application/pdf', 'Content-Disposition': `attachment; filename="${profile.username}-resume.pdf"`, 'Cache-Control': 'no-store' } });
   } catch (error) { return NextResponse.json({ error: error instanceof Error ? error.message : 'Unable to generate résumé.' }, { status: 422 }); }
 }

@@ -38,7 +38,7 @@ Enable Email authentication. Add these redirect URLs under Authentication → UR
 ```text
 http://localhost:3000/auth/callback
 https://YOUR-VERCEL-DOMAIN.vercel.app/auth/callback
-https://nolayout.com/auth/callback
+https://zhen.com/auth/callback
 ```
 
 ## 3. Deploy with Vercel
@@ -52,10 +52,10 @@ Use these deployment values:
 
 ```text
 NEXT_PUBLIC_SITE_URL=https://YOUR-VERCEL-DOMAIN.vercel.app
-NEXT_PUBLIC_ROOT_DOMAIN=nolayout.com
+NEXT_PUBLIC_ROOT_DOMAIN=zhen.com
 ```
 
-Replace `NEXT_PUBLIC_SITE_URL` with `https://nolayout.com` after the production domain is live.
+Replace `NEXT_PUBLIC_SITE_URL` with `https://zhen.com` after the production domain is live.
 
 ## 4. Connect Stripe
 
@@ -76,7 +76,7 @@ Copy Stripe's signing secret into `STRIPE_WEBHOOK_SECRET` in Vercel.
 
 ## 5. Configure portfolio domains
 
-For username subdomains, configure `*.nolayout.com` in Vercel and add the requested wildcard DNS record at the domain provider. The middleware rewrites `username.nolayout.com` to the relevant public portfolio.
+For username subdomains, configure `*.zhen.com` in Vercel and add the requested wildcard DNS record at the domain provider. The middleware rewrites `username.zhen.com` to the relevant public portfolio.
 
 For a custom domain, add it through Vercel Domains, then store the verified hostname in `profiles.custom_domain` using Supabase Studio. Do not include `https://` or a path.
 

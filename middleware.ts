@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const rootDomain = (process.env.NEXT_PUBLIC_ROOT_DOMAIN || 'nolayout.com').toLowerCase();
+const rootDomain = (process.env.NEXT_PUBLIC_ROOT_DOMAIN || 'zhen.com').toLowerCase();
 const localHosts = new Set(['localhost', '127.0.0.1']);
 
 export function middleware(request: NextRequest) {
   const host = (request.headers.get('host') || '').split(':')[0].toLowerCase();
-  if (localHosts.has(host) || host === rootDomain || host === `www.${rootDomain}`) return NextResponse.next();
+  // Vercel preview/production deployment hosts are always application hosts.
+  // Custom-domain rewrites begin only after a custom domain is attached.
+  if (localHosts.has(host) || host.endsWith('.vercel.app') || host === rootDomain || host === `www.${rootDomain}`) return NextResponse.next();
 
   const url = request.nextUrl.clone();
   const suffix = `.${rootDomain}`;
