@@ -15,6 +15,9 @@ export async function POST(request: Request) {
     // React 19's createElement return type. The document is valid at runtime.
     const document = React.createElement(ResumeDocument, { profile }) as unknown as Parameters<typeof renderToBuffer>[0];
     const pdf = await renderToBuffer(document);
-    return new NextResponse(pdf, { headers: { 'Content-Type': 'application/pdf', 'Content-Disposition': `attachment; filename="${profile.username}-resume.pdf"`, 'Cache-Control': 'no-store' } });
+    // Convert Node's Buffer to a web-standard byte array accepted by NextResponse.
+    const body = new Uint8Array(pdf.length);
+    body.set(pdf);
+    return new NextResponse(body, { headers: { 'Content-Type': 'application/pdf', 'Content-Disposition': `attachment; filename="${profile.username}-resume.pdf"`, 'Cache-Control': 'no-store' } });
   } catch (error) { return NextResponse.json({ error: error instanceof Error ? error.message : 'Unable to generate résumé.' }, { status: 422 }); }
 }
