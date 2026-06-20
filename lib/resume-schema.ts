@@ -1,0 +1,11 @@
+import { z } from 'zod';
+const date = z.string().regex(/^(0[1-9]|1[0-2])\/\d{4}$|^Present$/, 'Use MM/YYYY or Present');
+const url = z.string().url().optional().or(z.literal('')).default('');
+export const targetRegionSchema = z.enum(['us_ca', 'uk_au', 'europe']);
+export const experienceSchema = z.object({ company:z.string().min(1), role:z.string().min(1), location:z.string().optional().default(''), start_date:date.refine(v=>v!=='Present'), end_date:date.optional().default('Present'), description:z.array(z.string().min(1)).max(8) });
+export const projectSchema = z.object({ title:z.string().min(1), description:z.string().min(1), bullets:z.array(z.string().min(1)).max(6), image_url:url, project_url:url, repo_url:url, live_url:url, article_url:url });
+export const educationSchema = z.object({ institution:z.string().min(1), degree:z.string().min(1), field_of_study:z.string().optional().default(''), graduation_date:z.string().optional().default('') });
+export const profileSchema = z.object({ username:z.string().min(3).max(40).regex(/^[a-z0-9-]+$/),full_name:z.string().min(1),email:z.string().email(),phone:z.string().optional().default(''),location:z.string().optional().default(''),linkedin_url:url,github_url:url,portfolio_url:url,summary:z.string().optional().default(''),theme_slug:z.enum(['minimalist','midnight','sand']).default('minimalist'),target_region:targetRegionSchema.default('us_ca'),birth_date:z.string().optional().default(''),nationality:z.string().optional().default(''),photo_url:url,skills:z.array(z.string().min(1)).max(30).default([]),experiences:z.array(experienceSchema).max(20).default([]),projects:z.array(projectSchema).max(12).default([]),education:z.array(educationSchema).max(10).default([]) });
+export type PortfolioData = z.infer<typeof profileSchema>;
+export const parsedResumeSchema = profileSchema.omit({username:true,theme_slug:true,linkedin_url:true,github_url:true,portfolio_url:true,target_region:true,birth_date:true,nationality:true,photo_url:true}).extend({username:z.string().optional(),education:z.array(educationSchema).default([])});
+export const bulletPolishSchema = z.object({ bullets:z.array(z.string().min(1).max(220)).min(1).max(6) });
